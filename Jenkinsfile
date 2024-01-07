@@ -14,8 +14,7 @@ pipeline {
              sh 'mvn clean deploy'
          } 
        }
-    }
-        stage('SonarQube analysis'){
+    stage('SonarQube analysis'){
         environment {
            scannerHome = tool 'shak-sonar-scanner' 
         }     
@@ -23,8 +22,9 @@ pipeline {
          withSonarQubeEnv('sonarqube-server') { // If you have configured more than one global server connection, you can specify its name
            sh "${scannerHome}/bin/sonar-scanner"
          } 
-       }
+        }
     }
+}
 }
 
 
