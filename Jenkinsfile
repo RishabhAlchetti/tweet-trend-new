@@ -21,9 +21,9 @@ pipeline {
     steps {
         script {
             def workspacePath = pwd()
-            withSonarQubeEnv('shak-sonarqube-server') {
-                sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectBaseDir=${workspacePath}"
-            }
+          //  withSonarQubeEnv('shak-sonarqube-server') {
+            //    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectBaseDir=${workspacePath}"
+           // }
         }
     }
 }
