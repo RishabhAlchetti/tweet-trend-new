@@ -14,16 +14,7 @@ pipeline {
              sh 'mvn clean deploy'
          } 
        }
-        stage('Debug') {
-            steps {
-                script {
-                    def workspacePath = pwd()
-                    echo "Current Directory: ${workspacePath}"
-                    echo "Contents of Workspace:"
-                    sh 'ls -al'
-                }
-            }
-        }
+        
 
     stage('SonarQube analysis') {
     environment {
@@ -37,10 +28,11 @@ pipeline {
             }
         }
     }
+        }
+    }
 }
 
-}
-}
+
 
 
    
