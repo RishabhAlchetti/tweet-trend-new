@@ -14,8 +14,6 @@ pipeline {
              sh 'mvn clean deploy'
          } 
        }
-
-     stages {
         stage('Debug') {
             steps {
                 script {
@@ -43,6 +41,6 @@ pipeline {
 
 }
 }
-}
+
 
    
