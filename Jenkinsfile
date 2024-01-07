@@ -4,27 +4,27 @@ pipeline {
             label 'maven'
         }
     }
- environment {
-    PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
- }
 
-    stages{
-        stage('maven-build'){
-         steps{
-             sh 'mvn clean deploy'
-         } 
-       }
-        
+    environment {
+        PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
+    }
 
-    stage('SonarQube analysis') {
+    stages {
+        stage('maven-build') {
+            steps {
+                sh 'mvn clean deploy'
+            }
+        }
+
+        stage('SonarQube analysis') {
             environment {
-                scannerHome = tool 'shak-sonar-scanner' 
-            }     
+                scannerHome = tool 'shak-sonar-scanner'
+            }
             steps {
                 script {
                     echo "Before entering withSonarQubeEnv block:"
                     sh 'pwd'
-                    
+
                     def workspacePath = pwd()
                     echo "Current Directory: ${workspacePath}"
                     echo "Contents of Workspace:"
@@ -38,13 +38,24 @@ pipeline {
 
                     echo "After withSonarQubeEnv block:"
                     sh 'pwd'
+                }
+            }
         }
     }
+
+    post {
+        always {
+            echo "This will run always, regardless of the build result"
+        }
+        success {
+            echo "This will run only if the build is successful"
+        }
+        failure {
+            echo "This will run only if the build fails"
+        }
+        // Don't run on status
+        dontRunOnStatus {
+            activities = [true, true, true, true, true, true, false]
         }
     }
 }
-
-
-
-
-   
