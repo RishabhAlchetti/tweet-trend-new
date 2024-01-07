@@ -5,6 +5,10 @@ pipeline {
         }
     }
 
+    options {
+        skipDefaultCheckout(true)
+    }
+
     environment {
         PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
     }
@@ -12,7 +16,10 @@ pipeline {
     stages {
         stage('maven-build') {
             steps {
-                sh 'mvn clean deploy'
+                script {
+                    checkout scm
+                    sh 'mvn clean deploy'
+                }
             }
         }
 
@@ -52,10 +59,6 @@ pipeline {
         }
         failure {
             echo "This will run only if the build fails"
-        }
-        // Don't run on status
-        dontRunOnStatus {
-            activities = [true, true, true, true, true, true, false]
         }
     }
 }
