@@ -5,9 +5,9 @@ pipeline {
         }
     }
 
-    options {
-        skipDefaultCheckout(true)
-    }
+ //   options {
+  //      skipDefaultCheckout(true)
+   // }
 
     environment {
         PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
@@ -22,7 +22,7 @@ pipeline {
             }
         }
 
-        stage('SonarQube analysis') {
+     /*   stage('SonarQube analysis') {
             environment {
                 scannerHome = tool 'shak-sonar-scanner'
             }
@@ -34,7 +34,7 @@ pipeline {
                 echo "After withSonarQubeEnv block:"
                 sh 'pwd'
             }
-        }
+        } */
     }
 
     post {
