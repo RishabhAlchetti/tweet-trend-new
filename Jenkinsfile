@@ -17,7 +17,6 @@ pipeline {
         stage('maven-build') {
             steps {
                 script {
-                    checkout scm
                     sh 'mvn clean deploy'
                 }
             }
