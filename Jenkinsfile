@@ -24,19 +24,19 @@ pipeline {
         }
 
         stage('SonarQube analysis') {
-    environment {
-        scannerHome = tool 'shak-sonar-scanner'
-    }
-    steps {
-        script {
-            sh 'mvn verify sonar:sonar -Dsonar.organization=shak-key -Dsonar.projectKey=shak-key_twittertrend -Pcoverage'
+            environment {
+                scannerHome = tool 'shak-sonar-scanner'
+            }
+            steps {
+                script {
+                    sh 'mvn verify sonar:sonar -Dsonar.organization=shak-key -Dsonar.projectKey=shak-key_twittertrend -Pcoverage'
+                }
+
+                echo "After withSonarQubeEnv block:"
+                sh 'pwd'
+            }
         }
-
-        echo "After withSonarQubeEnv block:"
-        sh 'pwd'
     }
-}
-
 
     post {
         always {
@@ -50,5 +50,3 @@ pipeline {
         }
     }
 }
-}
-
