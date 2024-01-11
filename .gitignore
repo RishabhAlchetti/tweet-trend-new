@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ignore specific file
 terraform.tfstate
 terraform.tfstate.backup
@@ -7,3 +8,6 @@ terraform.tfstate.backup
 
 # Ignore a directory and its contents
 Ansible
+=======
+./target/*
+>>>>>>> 2e6190d789a7fe7f82cebe8dca1026a3c1c5abb8
