@@ -4,13 +4,5 @@ pipeline{
             label 'maven'
         }
     }
-    stages{
-        stage('clone_code'){
-          steps{
-              git branch: 'main', url: 'https://github.com/RishabhAlchetti/tweet-trend-new.git'
-          }    
-            
-        }
-    }
 }
 
