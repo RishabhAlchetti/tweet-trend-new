@@ -1,4 +1,6 @@
 def registry = 'https://rishabh07.jfrog.io'
+def imageName = 'rishabh07.jfrog.io/mydocker-docker/ttrend'                   
+def version   = '2.1.2'
 pipeline{
     agent {
         node {
@@ -75,9 +77,7 @@ stage("Quality Gate"){
             }
         }   
     }   
-    stage (" Docker Publish "){
-   def imageName = 'rishabh07.jfrog.io/mydocker-docker/ttrend'                   
-   def version   = '2.1.2'
+
     stage(" Docker Build ") {
       steps {
         script {
@@ -87,7 +87,7 @@ stage("Quality Gate"){
         }
       }
     }
-   }
+   
             stage (" Docker Publish "){
         steps {
             script {
