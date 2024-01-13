@@ -75,8 +75,8 @@ stage("Quality Gate"){
             }
         }   
     }   
-
-    def imageName = 'rishabh07.jfrog.io/mydocker-docker/ttrend'                   
+    stage (" Docker Publish "){
+   def imageName = 'rishabh07.jfrog.io/mydocker-docker/ttrend'                   
    def version   = '2.1.2'
     stage(" Docker Build ") {
       steps {
@@ -87,7 +87,7 @@ stage("Quality Gate"){
         }
       }
     }
-
+   }
             stage (" Docker Publish "){
         steps {
             script {
