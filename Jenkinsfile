@@ -100,6 +100,15 @@ stage("Quality Gate"){
         }
     }
 
+   stage ("deploy") {
+     steps {
+       script{
+         sh './deploy.sh'
+       }
+
+     }
+   } 
+
 }
 }
 
