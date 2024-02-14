@@ -4,6 +4,9 @@ pipeline {
           label 'maven'    
         }
     }
+   environment{
+    PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
+}     
 
     stages {
         stage('checkout') {
@@ -11,9 +14,7 @@ pipeline {
             git branch: 'main', url: 'https://github.com/RishabhAlchetti/tweet-trend-new.git'
             } 
         }
-      environment{
-    PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
-}    
+      
         stage("build"){
           steps{
             echo "------------ build started -----------"
