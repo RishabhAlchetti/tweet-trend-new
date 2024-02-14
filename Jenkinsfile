@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('checkout') {
             steps {
-            git branch: 'min', url: 'https://github.com/RishabhAlchetti/tweet-trend-new.git'
+            git branch: 'main', url: 'https://github.com/RishabhAlchetti/tweet-trend-new.git'
             }
         }
     }
