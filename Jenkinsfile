@@ -9,12 +9,6 @@ pipeline {
 }     
 
     stages {
-        stage('checkout') {
-            steps {
-            git branch: 'main', url: 'https://github.com/RishabhAlchetti/tweet-trend-new.git'
-            } 
-        }
-      
         stage("build"){
           steps{
             echo "------------ build started -----------"
