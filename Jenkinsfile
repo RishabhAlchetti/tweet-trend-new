@@ -30,9 +30,11 @@ pipeline {
             steps {
                 script {
                     catchError(buildResult: 'SUCCESS') {
+                        timeout(time: 2, unit: 'MINUTES') {
                         withSonarQubeEnv('shak-sonarqube-server') {
                             sh "${scannerHome}/bin/sonar-scanner"
                         }
+                     }     
                     }
                 }
             }
