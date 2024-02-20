@@ -1,4 +1,5 @@
 def registry = 'https://rishabh08.jfrog.io/'
+def version   = '2.1.2'
 pipeline {
     agent {
         node {
@@ -73,7 +74,15 @@ pipeline {
             }
         }   
     }        
-
+   stage(" Docker Build ") {
+      steps {
+        script {
+           echo '<--------------- Docker Build Started --------------->'
+           app = docker.build(imageName+":"+version)
+           echo '<--------------- Docker Build Ends --------------->'
+        }
+      }
+    }
         
     }
 } 
