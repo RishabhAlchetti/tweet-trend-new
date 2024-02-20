@@ -1,4 +1,5 @@
 def registry = 'https://rishabh08.jfrog.io/'
+def imageName = 'https://rishabh08.jfrog.io/artifactory/api/docker/docker-repo-docker'
 def version   = '2.1.2'
 pipeline {
     agent {
