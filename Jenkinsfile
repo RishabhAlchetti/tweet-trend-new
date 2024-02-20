@@ -23,23 +23,4 @@ pipeline {
              echo "--------------unit test completed -----------"
            }
         }
-       stage('SonarQube analysis') {
-            environment {   
-                scannerHome = tool 'shak-sonar-scanner'
-            }
-            steps {
-                script {
-                    catchError(buildResult: 'SUCCESS') {
-                        timeout(time: 2, unit: 'MINUTES') {
-                        withSonarQubeEnv('shak-sonarqube-server') {
-                            sh "${scannerHome}/bin/sonar-scanner"
-                        }
-                     }     
-                    }
-                }
-            }
-        }
     }
-}
-
-   
