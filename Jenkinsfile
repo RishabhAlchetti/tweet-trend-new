@@ -95,6 +95,12 @@ pipeline {
             }
         }
     }
-        
+    stage ("deploy") {
+     steps {
+       script{
+         sh './deploy.sh'
+       }
+     }
+   }           
     }
 } 
