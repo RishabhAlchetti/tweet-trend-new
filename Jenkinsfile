@@ -99,7 +99,7 @@ pipeline {
        steps {
          script {
             echo '<--------------- Helm Deploy Started --------------->'
-            sh 'helm install ttrend /home/ubuntu/kubernetes/ttrend-0.1.0.tgz --values values.yaml --debug'
+            sh 'helm install ttrend /home/ubuntu/kubernetes/ttrend-0.1.0.tgz'
             echo '<--------------- Helm deploy Ends --------------->'
          }
        }
