@@ -17,7 +17,7 @@ spec:
       - name: jfrogcred
       containers:
       - name:  mycont
-        image: rishabh08.jfrog.io/docker-repo-docker-local/ttrend:2.1.2
+        image: rishabh08.jfrog.io/docker-repo-docker-local/ttrend:2.1.3
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
