@@ -14,7 +14,7 @@ spec:
         app:  mypod
     spec:
       imagePullSecrets:
-      - name: cred
+      - name: jfrogcred
       containers:
       - name:  mycont
         image: rishabh08.jfrog.io/docker-repo-docker-local/ttrend:2.1.2
