@@ -1,81 +1,85 @@
-def registry = 'https://rishabh08.jfrog.io/'
-def imageName = 'rishabh08.jfrog.io/docker-repo-docker-local/ttrend'
+def registry = 'https://rishabh06.jfrog.io/'
+def imageName = 'rishabh06.jfrog.io/docker-repo-docker-local'
 def version   = '2.1.3'
+
 pipeline {
     agent {
         node {
-          label 'maven'    
+            label 'Maven'
         }
     }
-   environment{
-    PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
-}     
-
+    environment {
+        PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
+    }
     stages {
-        stage("build"){
-          steps{
-            echo "------------ build started -----------"
-            sh 'mvn clean deploy -Dmaven.test.skip=true'
-            echo "------------ build completed -----------"
-          }
-        }
-        stage("test"){
-           steps{
-             echo "--------------unit test started -----------"
-             sh 'mvn surefire-report:report'
-             echo "--------------unit test completed -----------"
-           }
-        }
-       stage('SonarQube analysis') {
-    environment{   
-      scannerHome = tool 'shak-sonar-scanner'
-    }
-    steps{
-     withSonarQubeEnv('shak-sonarqube-server') { // If you have configured more than one global server connection, you can specify its name
-      sh "${scannerHome}/bin/sonar-scanner"
-    }
-    }
-    
-  } 
-   stage("Quality Gate"){
-    steps {
-        script {
-        timeout(time: 1, unit: 'HOURS') { // Just in case something goes wrong, pipeline will be killed after a timeout
-    def qg = waitForQualityGate() // Reuse taskId previously collected by withSonarQubeEnv
-    if (qg.status != 'OK') {
-      error "Pipeline aborted due to quality gate failure: ${qg.status}"
-    }
-  }
-}
-    }
-  }
-
-   stage("Jar Publish") {
-        steps {
-            script {
-                    echo '<--------------- Jar Publish Started --------------->'
-                     def server = Artifactory.newServer url:registry+"/artifactory" ,  credentialsId:"jfrog-cred"
-                     def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
-                     def uploadSpec = """{
-                          "files": [
-                            {
-                              "pattern": "jarstaging/(*)",
-                              "target": "maven-repo-libs-release-local/{1}",
-                              "flat": "false",
-                              "props" : "${properties}",
-                              "exclusions": [ "*.sha1", "*.md5"]
-                            }
-                         ]
-                     }"""
-                     def buildInfo = server.upload(uploadSpec)
-                     buildInfo.env.collect()
-                     server.publishBuildInfo(buildInfo)
-                     echo '<--------------- Jar Publish Ended --------------->'  
-            
+        stage("Git Clone") {
+            steps {
+                echo "----------- Cloning repository ----------"
+                git branch: 'main', url: 'https://github.com/RishabhAlchetti/tweet-trend-new.git'
             }
-        }   
-    }        
-   stage(" Docker Build ") {
+        }
+        stage("Build") {
+            steps {
+                echo "----------- Build started ----------"
+                sh 'mvn clean deploy -Dmaven.test.skip=true'
+                echo "----------- Build completed ----------"
+            }
+        }
+        stage("Test") {
+            steps {
+                echo "----------- Unit test started ----------"
+                sh 'mvn surefire-report:report'
+                echo "----------- Unit test completed ----------"
+            }
+        }
+        stage('SonarQube analysis') {
+            environment {
+                scannerHome = tool 'shak-sonar-scanner'
+            }
+            steps {
+                withSonarQubeEnv('sonar-shak') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                script {
+                    timeout(time: 1, unit: 'HOURS') {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+        stage("Jar Publish") {
+            steps {
+                script {
+                    echo '<--------------- Jar Publish Started --------------->'
+                    echo "Git commit ID: ${env.GIT_COMMIT}"  // Print Git commit ID for debugging
+                    def server = Artifactory.newServer url: registry + "/artifactory", credentialsId: "jfrog-cred"
+                    def properties = "buildid=${env.BUILD_ID},commitid=${env.GIT_COMMIT}"  // Use env.GIT_COMMIT
+                    def uploadSpec = """{
+                        "files": [
+                            {
+                                "pattern": "jarstaging/(*)",
+                                "target": "maven-repo-libs-release-local/{1}",
+                                "flat": "false",
+                                "props": "${properties}",
+                                "exclusions": ["*.sha1", "*.md5"]
+                            }
+                        ]
+                    }"""
+                    def buildInfo = server.upload(uploadSpec)
+                    buildInfo.env.collect()
+                    server.publishBuildInfo(buildInfo)
+                    echo '<--------------- Jar Publish Ended --------------->'  
+                }
+            }   
+        } 
+      stage(" Docker Build ") {
       steps {
         script {
            echo '<--------------- Docker Build Started --------------->'
@@ -84,7 +88,19 @@ pipeline {
         }
       }
     }
-     stage (" Docker Publish "){
+    
+    stage("trivy ") {
+      steps {
+        script {
+           echo '<--------------- Trivy Started --------------->'
+           sh "trivy image ${imageName}:${version}"
+           echo '<----------------- Trivy Ends --------------->'
+        }
+      }
+    }
+    
+
+    stage (" Docker Publish "){
         steps {
             script {
                echo '<--------------- Docker Publish Started --------------->'  
@@ -94,15 +110,7 @@ pipeline {
                echo '<--------------- Docker Publish Ended --------------->'  
             }
         }
+    }  
+        
     }
-    stage(" Deploy ") {
-       steps {
-         script {
-            echo '<--------------- Helm Deploy Started --------------->'
-            sh 'helm install ttrend /home/ubuntu/kubernetes/ttrend-0.1.0.tgz'
-            echo '<--------------- Helm deploy Ends --------------->'
-         }
-       }
-     }
-    }
-} 
+}
