@@ -1,14 +1,14 @@
 pipeline {
     agent {
         node {
-            label  'maven'
+            label  'Maven'
         }
     }
 
     stages {
-        stage('Hello') {
+        stage('build') {
             steps {
-                git branch: 'main', url: 'https://github.com/RishabhAlchetti/tweet-trend-new.git'
+               sh 'mvn clean install'
             }
         }
     }
